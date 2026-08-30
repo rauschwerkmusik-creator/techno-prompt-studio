@@ -34,7 +34,6 @@
         button.accent:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
         button.small { padding: 8px 12px; font-size: 0.75rem; background: #222; color: var(--neon); border: 1px solid #444; }
 
-        /* Arranger Timeline Styles */
         .timeline { display: flex; gap: 5px; margin-top: 10px; }
         .time-block { flex: 1; background: #181820; border: 1px solid #333; padding: 8px 4px; text-align: center; border-radius: 4px; font-size: 0.7rem; color: #aaa; cursor: pointer; }
         .time-block.active { border-color: var(--cyan); color: var(--cyan); background: #0e1e24; }
@@ -55,7 +54,7 @@
 </head>
 <body>
 
-    <h1>Rauschwerks Techno Prompt Generator <span>v12 MASTER</span></h1>
+    <h1>Rauschwerks Techno Prompt Generator <span>v13 PRO</span></h1>
 
     <div class="card">
         <label>Track Title Generator</label>
@@ -71,27 +70,54 @@
         </div>
     </div>
 
+    <!-- NEU: Location, Vibe & Track-Länge -->
+    <div class="card" style="border-color: var(--accent);">
+        <label for="locationVibe" style="color: var(--accent);">Location & Vibe Profile</label>
+        <select id="locationVibe" onchange="generatePrompt()">
+            <option value="Mainstage Festival Peak-Time, massive stadium reverb, huge crowd energy">🎆 Festival Mainstage (Widescreen Anthems)</option>
+            <option value="Dark underground bunker club, industrial acoustics, sweaty intimate atmosphere">🏭 Dark Underground Bunker Club (Raw & Sweaty)</option>
+            <option value="Open Air daytime stage, warm sunshine vibe, euphoric rolling rhythm">☀️ Open Air / Daytime Rave (Groovy & Uplifting)</option>
+            <option value="Afterhour basement at 7 AM, hypnotic repetitive trance, deep rolling bass">🌙 Afterhour / Sunrise Basement (Hypnotic & Deep)</option>
+            <option value="Warehouse rave, massive concrete walls, high-pressure sound system">🏗️ Industrial Warehouse (Raw & Punchy)</option>
+        </select>
+
+        <label for="trackDuration">Target Track Length & Structure Style</label>
+        <select id="trackDuration" onchange="generatePrompt()">
+            <option value="Full length extended club mix (6-8 minutes), gradual hypnotic progression">Extended Club Mix (6-8 Min)</option>
+            <option value="Standard festival edit (3-4 minutes), fast hitting structure, quick drops">Standard Festival Edit (3-4 Min)</option>
+            <option value="Short radio / streaming cut (2-2:30 minutes), immediate impact">Short Streaming Cut (2-2:30 Min)</option>
+            <option value="DJ tool loop intro/outro-friendly mix (5 minutes)">DJ Tool / Extended Loop Mix (5 Min)</option>
+        </select>
+    </div>
+
     <div class="card" style="border-color: var(--cyan);">
-        <label for="artistStyle" style="color: var(--cyan);">DJ Signature Presets (40+ Artists)</label>
+        <label for="artistStyle" style="color: var(--cyan);">DJ Signature Presets (Trance bis Schranz)</label>
         <select id="artistStyle" onchange="applyArtistPreset()">
             <option value="custom">-- Custom Selection --</option>
-            <optgroup label="Hard, Schranz & Industrial">
+            <optgroup label="Trance-Techno & Euro-Trance (Bouncy)">
+                <option value="marlon">Marlon Hoffstadt / DJ Daddy Trance (Bouncy Euro-Trance)</option>
+                <option value="malugi">MALUGI (Groovy Trance & House Energy)</option>
+                <option value="darrenstyles">Darren Styles / Hard Trance Vibe (High Energy Anthems)</option>
+                <option value="isokib">I_o Style (Dark Progressive Trance & Techno)</option>
+            </optgroup>
+            <optgroup label="Hard Trance & Rave & Neo-Trance">
+                <option value="horsegiirL">horsegiirL (Bouncy Horse-Trance & Techno)</option>
+                <option value="badboombox">Bad Boombox (Sexy Trance & Ghetto Tech Groove)</option>
+                <option value="aze">AZYR (Fast Rave & Hard Trance Fusion)</option>
+                <option value="ceraounun">Cera Khin / Fast Rave Trance</option>
+            </optgroup>
+            <optgroup label="Hardgroove & Tribal Techno">
+                <option value="carlcox">Carl Cox (Classic Peak Techno Groove)</option>
+                <option value="benwal">Benwal (Bouncy Hardgroove & House)</option>
+                <option value="dvs1">DVS1 (Deep Rolling Groove & Hypnotic Floor)</option>
+                <option value="partiboi69">Partiboi69 (Ghetto Funk & Raw 909 Groove)</option>
+            </optgroup>
+            <optgroup label="Schranz, Hard & Industrial">
                 <option value="klangkuenstler">Klangkuenstler (155 BPM Schranz & Industrial)</option>
                 <option value="nicomoreno">Nico Moreno (Aggressive Hard Kick Slap)</option>
                 <option value="saralandry">Sara Landry (High-Energy Acid Hard Techno)</option>
-                <option value="ihatemodels">I Hate Models (Nostalgic Industrial Synth)</option>
-                <option value="nine9s">999999999 (Hardware 303 Live Acid)</option>
-            </optgroup>
-            <optgroup label="Peak Time & Driving">
-                <option value="charlotte">Charlotte de Witte (Acid / Driving Peak Techno)</option>
-                <option value="amelie">Amelie Lens (Fast Peak-Time Acid Techno)</option>
-                <option value="carlcox">Carl Cox (Classic Peak Techno Groove)</option>
-                <option value="reinier">Reinier Zonneveld (Live Raw 303 Acid Techno)</option>
-            </optgroup>
-            <optgroup label="Trance-Techno & Melodic">
-                <option value="marlon">Marlon Hoffstadt (Euro-Trance & Bouncy Techno)</option>
-                <option value="anyma">Anyma / Tale of Us (Melodic Visual Techno)</option>
-                <option value="stephanbodzin">Stephan Bodzin (Analogue Moog Synth Leads)</option>
+                <option value="russell">Rush / Pierre (Classic German Schranz & Loop-Techno)</option>
+                <option value="brakka">Brakka / Hard Schranzcore</option>
             </optgroup>
         </select>
     </div>
@@ -107,16 +133,17 @@
 
             <label for="genre">Subgenre</label>
             <select id="genre" onchange="generatePrompt()">
+                <option value="Fast Euro-Trance Techno">Fast Euro-Trance Techno</option>
+                <option value="Hard Trance & Rave">Hard Trance & Rave</option>
+                <option value="Bouncy Hardgroove">Bouncy Hardgroove</option>
                 <option value="Hard Techno">Hard Techno</option>
+                <option value="Schranz Hard Groove">Schranz / Hard Groove</option>
                 <option value="Raw Hypnotic Techno">Raw / Hypnotic Techno</option>
                 <option value="Melodic Techno">Melodic Techno</option>
-                <option value="Acid Techno">Acid Techno</option>
-                <option value="Schranz Hard Groove">Schranz / Hard Groove</option>
-                <option value="Fast Euro-Trance Techno">Fast Euro-Trance Techno</option>
             </select>
 
             <label>Tempo: <span id="bpmDisplay" class="bpm-val">150 BPM</span></label>
-            <input type="range" id="bpm" min="120" max="175" value="150" oninput="updateBPM()">
+            <input type="range" id="bpm" min="120" max="180" value="150" oninput="updateBPM()">
 
             <label for="key">Tonart / Key</label>
             <select id="key" onchange="generatePrompt()">
@@ -124,6 +151,7 @@
                 <option value="A minor">A Minor</option>
                 <option value="C minor">C Minor</option>
                 <option value="D minor">D Minor</option>
+                <option value="E minor">E Minor</option>
             </select>
         </div>
 
@@ -132,6 +160,7 @@
             <select id="synthEngine">
                 <option value="sawtooth">303 Acid Sawtooth (Screaming Resonance)</option>
                 <option value="square">303 Acid Square Wave (Hollow Punch)</option>
+                <option value="trancelead">Super-Saw Trance Lead (Wailing Anthem)</option>
                 <option value="rumble">Sub-Rumble Heavy Bass Kick</option>
                 <option value="moog">Analogue Moog Bass (Warm Fat Drive)</option>
                 <option value="fm">FM Pluck Synth (Metallic Sharp Edge)</option>
@@ -139,18 +168,18 @@
 
             <label for="drums">Drums & Percussion Kit</label>
             <select id="drums" onchange="generatePrompt()">
+                <option value="bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares">Euro-Trance Bounce & Snare</option>
+                <option value="hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals">Hardgroove Tribal & Ride</option>
                 <option value="heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats">Hard 909 & Rolling Sub</option>
-                <option value="ultra distorted schranz kick, fast percussion loop, aggressive noise hats">Schranz Percussion Kick</option>
-                <option value="bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares">Euro-Trance Bounce</option>
-                <option value="sub-heavy acoustic-electronic hybrid kick, crisp rimshots, ride cymbals">Hypnotic Deep Drums & Ride</option>
+                <option value="ultra distorted schranz kick, fast loop-percussion, aggressive noise hats">Schranz Loop Kick & Noise</option>
                 <option value="industrial metal percussion, distorted snare hits, anvil impacts">Industrial Metal & Anvils</option>
             </select>
 
             <label for="synths">Lead & Dynamic Synth Textures</label>
             <select id="synths" onchange="generatePrompt()">
+                <option value="euphoric wide super-saw trance arpeggiator, uplifting melodic pads">Euphoric Trance Arp & Pads</option>
                 <option value="screaming TB-303 acid lead with resonance sweeps">Screaming TB-303 Acid</option>
-                <option value="euphoric wide synthesizer arpeggiator, warm analogue pads">Euphoric Arp & Pads</option>
-                <option value="soaring moog synth lead, expressive filter sweeps">Analogue Moog Solo Lead</option>
+                <option value="groovy filtered chord stabs, rhythmic house-techno keys">Groovy Filtered Chords</option>
                 <option value="dark dystopian supersaw stabs, detuned lead synths">Detuned Supersaw Stabs</option>
                 <option value="hypnotic minor plucks, fast delayed synth riffs">Hypnotic Minor Plucks</option>
             </select>
@@ -158,9 +187,9 @@
             <label for="vocals">Vocal Style & Mode</label>
             <select id="vocals" onchange="generatePrompt()">
                 <option value="none">Keine Vocals (Instrumental)</option>
+                <option value="euphoric female trance choir vocals, soaring emotional hooks">Euphoric Female Trance Vocals</option>
                 <option value="dark robotic vocal chants, hypnotic spoken words">Robotic Vocal Chants</option>
                 <option value="deep German male spoken word monologue about Berlin nightlife">German Deep Male Vocal</option>
-                <option value="hypnotic female whispered vocals, dark atmospheric phrases">Female Whispered Vocal</option>
             </select>
         </div>
     </div>
@@ -221,27 +250,32 @@
             de: ["\nDie Frequenz übernimmt die Kontrolle.\nIm Dunkeln verlieren wir die Zeit.\n\n[Drop]\nBass. Druck. Ekstase."],
             en: ["\nLost inside the hypnotic frequency.\nWe belong to the shadows of the club.\n\n[Drop]\nDon't stop the bass."],
             es: ["\nLa frecuencia toma el control.\nPerdemos la noción del tiempo en la oscuridad.\n\n[Drop]\nBajo. Presión. Éxtasis."],
-            fr: ["\nLa fréquence prend le contrôle.\nNous perdons la notion du temps dans l'obscurité.\n\n[Drop]\nBasse. Pression. Extase."]
+            fr: ["\nLa fréquence prend le contrôle.\nNous nous perdons dans l'obscurité de la nuit.\n\n[Drop]\nBasse. Pression. Extase."]
         };
 
         const artistPresets = {
-            klangkuenstler: { genre: "Schranz Hard Groove", bpm: 155, key: "F minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast percussion loop, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Klangkuenstler 1990s Schranz Hard Techno style" },
+            marlon: { genre: "Fast Euro-Trance Techno", bpm: 145, key: "D minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "euphoric female trance choir vocals, soaring emotional hooks", artistTag: "Marlon Hoffstadt DJ Daddy Trance bouncy euro-trance style" },
+            malugi: { genre: "Fast Euro-Trance Techno", bpm: 142, key: "A minor", synthEngine: "square", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "none", artistTag: "MALUGI groovy trance house style" },
+            darrenstyles: { genre: "Hard Trance & Rave", bpm: 150, key: "E minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "euphoric female trance choir vocals, soaring emotional hooks", artistTag: "Darren Styles uplifting hard trance anthem style" },
+            isokib: { genre: "Hard Trance & Rave", bpm: 138, key: "C minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "none", artistTag: "I_o dark progressive trance techno style" },
+            horsegiirL: { genre: "Hard Trance & Rave", bpm: 148, key: "A minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "euphoric female trance choir vocals, soaring emotional hooks", artistTag: "horsegiirL bouncy horse-trance style" },
+            badboombox: { genre: "Hard Trance & Rave", bpm: 144, key: "D minor", synthEngine: "square", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Bad Boombox sexy ghetto tech trance style" },
+            aze: { genre: "Hard Techno", bpm: 156, key: "E minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "AZYR fast rave hard trance techno style" },
+            ceraounun: { genre: "Hard Trance & Rave", bpm: 150, key: "F minor", synthEngine: "trancelead", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "none", artistTag: "Cera Khin fast rave hard trance style" },
+            carlcox: { genre: "Bouncy Hardgroove", bpm: 130, key: "A minor", synthEngine: "moog", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "none", artistTag: "Carl Cox classic peak techno groove style" },
+            benwal: { genre: "Bouncy Hardgroove", bpm: 140, key: "C minor", synthEngine: "square", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "none", artistTag: "Benwal bouncy hardgroove house style" },
+            dvs1: { genre: "Raw Hypnotic Techno", bpm: 132, key: "D minor", synthEngine: "rumble", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "hypnotic minor plucks, fast delayed synth riffs", vocals: "none", artistTag: "DVS1 deep rolling floor techno style" },
+            partiboi69: { genre: "Bouncy Hardgroove", bpm: 145, key: "F minor", synthEngine: "square", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Partiboi69 ghetto funk 909 groove style" },
+            klangkuenstler: { genre: "Schranz Hard Groove", bpm: 155, key: "F minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Klangkuenstler 1990s Schranz Hard Techno style" },
             nicomoreno: { genre: "Hard Techno", bpm: 150, key: "A minor", synthEngine: "rumble", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Nico Moreno hard aggressive industrial techno style" },
             saralandry: { genre: "Hard Techno", bpm: 152, key: "D minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "hypnotic female whispered vocals, dark atmospheric phrases", artistTag: "Sara Landry high energy acid hard techno style" },
-            ihatemodels: { genre: "Hard Techno", bpm: 148, key: "A minor", synthEngine: "fm", drums: "industrial metal percussion, distorted snare hits, anvil impacts", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "none", artistTag: "I Hate Models emotional industrial techno style" },
-            nine9s: { genre: "Acid Techno", bpm: 150, key: "F minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "none", artistTag: "999999999 hardware acid techno style" },
-            charlotte: { genre: "Acid Techno", bpm: 135, key: "C minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "hypnotic female whispered vocals, dark atmospheric phrases", artistTag: "Charlotte de Witte driving peak time style" },
-            amelie: { genre: "Acid Techno", bpm: 138, key: "F minor", synthEngine: "square", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "none", artistTag: "Amelie Lens peak time acid style" },
-            carlcox: { genre: "Raw Hypnotic Techno", bpm: 130, key: "A minor", synthEngine: "moog", drums: "sub-heavy acoustic-electronic hybrid kick, crisp rimshots, ride cymbals", synths: "hypnotic minor plucks, fast delayed synth riffs", vocals: "none", artistTag: "Carl Cox classic groove techno style" },
-            reinier: { genre: "Acid Techno", bpm: 142, key: "F minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "none", artistTag: "Reinier Zonneveld live 303 acid style" },
-            marlon: { genre: "Fast Euro-Trance Techno", bpm: 145, key: "D minor", synthEngine: "square", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide synthesizer arpeggiator, warm analogue pads", vocals: "hypnotic female whispered vocals, dark atmospheric phrases", artistTag: "Marlon Hoffstadt euro-trance style" },
-            anyma: { genre: "Melodic Techno", bpm: 126, key: "C minor", synthEngine: "moog", drums: "sub-heavy acoustic-electronic hybrid kick, crisp rimshots, ride cymbals", synths: "euphoric wide synthesizer arpeggiator, warm analogue pads", vocals: "female whispered vocals", artistTag: "Anyma Tale of Us melodic visual techno style" },
-            stephanbodzin: { genre: "Melodic Techno", bpm: 125, key: "A minor", synthEngine: "moog", drums: "sub-heavy acoustic-electronic hybrid kick, crisp rimshots, ride cymbals", synths: "soaring moog synth lead, expressive filter sweeps", vocals: "none", artistTag: "Stephan Bodzin analogue moog style" }
+            russell: { genre: "Schranz Hard Groove", bpm: 158, key: "C minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "none", artistTag: "Rush Pierre classic German loop Schranz style" },
+            brakka: { genre: "Schranz Hard Groove", bpm: 165, key: "E minor", synthEngine: "fm", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "industrial metal percussion, distorted snare hits, anvil impacts", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Brakka extreme hard Schranzcore style" }
         };
 
         function generateRandomTitle() {
-            const w1 = ["Dark", "Acid", "Industrial", "Cyber", "Velocity", "Binary"];
-            const w2 = ["Overdrive", "Pulse", "Pressure", "Sequence", "Distortion", "Core"];
+            const w1 = ["Trance", "Schranz", "Rave", "Cyber", "Velocity", "Binary", "Ecstasy"];
+            const w2 = ["Overdrive", "Pulse", "Pressure", "Anthem", "Distortion", "Core", "Delirium"];
             document.getElementById('trackTitle').value = `${w1[Math.floor(Math.random() * w1.length)]} ${w2[Math.floor(Math.random() * w2.length)]}`;
             generateRandomLyrics();
             generatePrompt();
@@ -301,6 +335,8 @@
             const drums = document.getElementById('drums').value;
             const synths = document.getElementById('synths').value;
             const vocals = document.getElementById('vocals').value;
+            const locationVibe = document.getElementById('locationVibe').value;
+            const trackDuration = document.getElementById('trackDuration').value;
 
             let artistTag = (artistKey !== "custom" && artistPresets[artistKey]) ? `, ${artistPresets[artistKey].artistTag}` : "";
             let vocalText = vocals !== "none" ? `, ${vocals}` : "";
@@ -309,11 +345,11 @@
 
             let prompt = "";
             if (ai === "suno") {
-                prompt = `${titlePrefix}${bpm} BPM, ${genre}${artistTag}, ${key}, ${drums}, ${synths}${vocalText}, high quality club master.`;
+                prompt = `${titlePrefix}${trackDuration}, designed for ${locationVibe}. ${bpm} BPM, ${genre}${artistTag}, ${key}, ${drums}, ${synths}${vocalText}, high quality club master.`;
             } else if (ai === "udio") {
-                prompt = `${titlePrefix}A driving ${bpm} BPM ${genre} track in ${key}${artistTag}.${arrText} Features ${drums}. Prominent ${synths}${vocalText}.`;
+                prompt = `${titlePrefix}Optimized for ${locationVibe}. A ${trackDuration} driving ${bpm} BPM ${genre} track in ${key}${artistTag}.${arrText} Features ${drums}. Prominent ${synths}${vocalText}.`;
             } else if (ai === "midjourney") {
-                prompt = `Album cover art for a ${genre} track${artistTag}, dark dystopian techno club aesthetic, neon green and pitch black, cinematic lighting --ar 1:1`;
+                prompt = `Album cover art for a ${genre} track, intended for ${locationVibe}${artistTag}, dark dystopian techno club aesthetic, neon green and pitch black, cinematic lighting --ar 1:1`;
             }
 
             document.getElementById('output-style').innerText = prompt;
@@ -322,12 +358,12 @@
         function randomizeAll() {
             document.getElementById('artistStyle').value = "custom";
             generateRandomTitle();
-            const selects = ['genre', 'synthEngine', 'drums', 'synths', 'vocals', 'key'];
+            const selects = ['genre', 'synthEngine', 'drums', 'synths', 'vocals', 'key', 'locationVibe', 'trackDuration'];
             selects.forEach(id => {
                 const el = document.getElementById(id);
                 el.selectedIndex = Math.floor(Math.random() * el.options.length);
             });
-            document.getElementById('bpm').value = Math.floor(Math.random() * (165 - 124 + 1)) + 124;
+            document.getElementById('bpm').value = Math.floor(Math.random() * (175 - 130 + 1)) + 130;
             updateBPM();
         }
 
@@ -423,6 +459,7 @@
             const gain = audioCtx.createGain();
 
             if (engine === 'square') osc.type = 'square';
+            else if (engine === 'trancelead') osc.type = 'sawtooth';
             else if (engine === 'moog' || engine === 'rumble') osc.type = 'triangle';
             else osc.type = 'sawtooth';
 
