@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Techno Prompt Studio v12 Master Arranger</title>
+    <title>Rauschwerks Techno Prompt Generator</title>
     <style>
         :root { --neon: #00ff66; --accent: #ff0055; --cyan: #00e5ff; --bg: #060608; --panel: #111116; }
         body { font-family: 'Consolas', 'Courier New', monospace; background: var(--bg); color: var(--neon); padding: 20px; max-width: 980px; margin: auto; }
@@ -55,7 +55,7 @@
 </head>
 <body>
 
-    <h1>Techno Studio <span>v12 DYNAMIC INSTRUMENTS</span></h1>
+    <h1>Rauschwerks Techno Prompt Generator <span>v12 MASTER</span></h1>
 
     <div class="card">
         <label>Track Title Generator</label>
@@ -219,10 +219,11 @@
 
         const lyricDatabase = {
             de: ["\nDie Frequenz übernimmt die Kontrolle.\nIm Dunkeln verlieren wir die Zeit.\n\n[Drop]\nBass. Druck. Ekstase."],
-            en: ["\nLost inside the hypnotic frequency.\nWe belong to the shadows of the club.\n\n[Drop]\nDon't stop the bass."]
+            en: ["\nLost inside the hypnotic frequency.\nWe belong to the shadows of the club.\n\n[Drop]\nDon't stop the bass."],
+            es: ["\nLa frecuencia toma el control.\nPerdemos la noción del tiempo en la oscuridad.\n\n[Drop]\nBajo. Presión. Éxtasis."],
+            fr: ["\nLa fréquence prend le contrôle.\nNous perdons la notion du temps dans l'obscurité.\n\n[Drop]\nBasse. Pression. Extase."]
         };
 
-        // Erweiterte DJ Presets mit spezifischen Instrumenten-Setups
         const artistPresets = {
             klangkuenstler: { genre: "Schranz Hard Groove", bpm: 155, key: "F minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast percussion loop, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Klangkuenstler 1990s Schranz Hard Techno style" },
             nicomoreno: { genre: "Hard Techno", bpm: 150, key: "A minor", synthEngine: "rumble", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Nico Moreno hard aggressive industrial techno style" },
@@ -338,7 +339,6 @@
             setTimeout(() => { btn.innerText = "Kopieren"; btn.style.background = "var(--accent)"; btn.style.color = "#fff"; }, 1500);
         }
 
-        /* MIDI Export */
         function exportMIDI() {
             const midiData = new Uint8Array([
                 0x4D, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x01, 0x00, 0x60,
@@ -351,7 +351,6 @@
             a.click();
         }
 
-        /* Web Audio Synthesizer Engine */
         function toggleAudioPreview() {
             if (isPlaying) { stopAudio(); } else { startAudio(); }
         }
@@ -385,7 +384,6 @@
 
             const currentStep = stepIndex % 16;
 
-            // Kick (Beat on 1, 5, 9, 13)
             if (currentStep % 4 === 0) {
                 const kickOsc = audioCtx.createOscillator();
                 const kickGain = audioCtx.createGain();
@@ -399,7 +397,6 @@
                 kickOsc.stop(audioCtx.currentTime + 0.15);
             }
 
-            // Off-Beat HiHat (3, 7, 11, 15)
             if (currentStep % 4 === 2) {
                 const bufferSize = audioCtx.sampleRate * 0.05;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -419,7 +416,6 @@
                 whiteNoise.start();
             }
 
-            // Multi-Engine Synth Lead
             const engine = document.getElementById('synthEngine').value;
             const freq = acidNotes[currentStep];
             const osc = audioCtx.createOscillator();
