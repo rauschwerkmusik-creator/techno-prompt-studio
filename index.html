@@ -21,7 +21,9 @@
         .title-group input { flex: 1; margin-top: 0; }
         .title-group select { width: 140px; margin-top: 0; }
         
-        .bpm-val { float: right; color: var(--accent); font-weight: bold; }
+        .bpm-wrapper { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        .bpm-wrapper input[type="range"] { flex: 1; margin-top: 0; }
+        .bpm-val { color: var(--accent); font-weight: bold; min-width: 75px; text-align: right; }
         
         .btn-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
         button { flex: 1; padding: 12px; background: var(--neon); color: #000; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase; border-radius: 4px; font-size: 0.8rem; transition: 0.2s; min-width: 140px; }
@@ -32,7 +34,8 @@
         button.cyan:hover { background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan); }
         button.accent { background: #1a1a22; color: var(--accent); border: 1px solid var(--accent); }
         button.accent:hover { background: var(--accent); color: #fff; box-shadow: 0 0 15px var(--accent); }
-        button.small { padding: 8px 12px; font-size: 0.75rem; background: #222; color: var(--neon); border: 1px solid #444; }
+        button.small { padding: 8px 12px; font-size: 0.75rem; background: #222; color: var(--neon); border: 1px solid #444; min-width: auto; }
+        button.small:hover { background: var(--neon); color: #000; }
 
         .timeline { display: flex; gap: 5px; margin-top: 10px; }
         .time-block { flex: 1; background: #181820; border: 1px solid #333; padding: 8px 4px; text-align: center; border-radius: 4px; font-size: 0.7rem; color: #aaa; cursor: pointer; }
@@ -54,13 +57,12 @@
 </head>
 <body>
 
-    <h1>Rauschwerks Techno Prompt Generator <span>v15 PRO SYNC</span></h1>
+    <h1>Rauschwerks Techno Prompt Generator <span>v16 PRO SYNC+</span></h1>
 
     <div class="card">
         <label>Track Title & Language Sync</label>
         <div class="title-group">
             <input type="text" id="trackTitle" placeholder="Titel eingeben..." oninput="generatePrompt()">
-            <!-- Nur noch Deutsch & Englisch, steuert Sprache für Titel & Lyrics gleichzeitig -->
             <select id="trackLang" onchange="onLanguageChange()">
                 <option value="de">Deutsch 🇩🇪</option>
                 <option value="en" selected>English 🇬🇧</option>
@@ -92,7 +94,6 @@
         <label for="artistStyle" style="color: var(--cyan);">DJ Signature Presets (International & Germany 🇩🇪)</label>
         <select id="artistStyle" onchange="applyArtistPreset()">
             <option value="custom">-- Custom Selection --</option>
-            
             <optgroup label="🇩🇪 Deutsche DJ-Größen (Hard Techno, Schranz & Industrial)">
                 <option value="klangkuenstler">Klangkuenstler (Berlin - 155 BPM Schranz & Industrial Hymnen)</option>
                 <option value="fatoni_c">Kobosil (Berlin - Dystopian Industrial & Dark Peak-Time)</option>
@@ -104,28 +105,24 @@
                 <option value="lenfaki">Len Faki (Berlin/Berghain - Driving Peak-Time Techno)</option>
                 <option value="schacke">Schacke (Kopenhagen/Berlin - Fast Trance & Hard Techno)</option>
             </optgroup>
-
             <optgroup label="Trance-Techno & Euro-Trance (Bouncy & Groovy)">
                 <option value="marlon">Marlon Hoffstadt / DJ Daddy Trance (Bouncy Euro-Trance)</option>
                 <option value="malugi">MALUGI (Groovy Trance & House Energy)</option>
                 <option value="darrenstyles">Darren Styles (High Energy Hard Trance Anthems)</option>
                 <option value="isokib">I_o Style (Dark Progressive Trance & Techno)</option>
             </optgroup>
-
             <optgroup label="Hard Trance, Rave & Neo-Trance">
                 <option value="horsegiirL">horsegiirL (Bouncy Horse-Trance & Techno)</option>
                 <option value="badboombox">Bad Boombox (Sexy Trance & Ghetto Tech Groove)</option>
                 <option value="aze">AZYR (Fast Rave & Hard Trance Fusion)</option>
                 <option value="ceraounun">Cera Khin (Fast Rave Trance)</option>
             </optgroup>
-
             <optgroup label="Hardgroove & Tribal Techno">
                 <option value="carlcox">Carl Cox (Classic Peak Techno Groove)</option>
                 <option value="benwal">Benwal (Bouncy Hardgroove & House)</option>
                 <option value="dvs1">DVS1 (Deep Rolling Groove & Hypnotic Floor)</option>
                 <option value="partiboi69">Partiboi69 (Ghetto Funk & Raw 909 Groove)</option>
             </optgroup>
-
             <optgroup label="International Hard Techno & Schranz Champions">
                 <option value="nicomoreno">Nico Moreno (Aggressive Hard Kick Slap)</option>
                 <option value="saralandry">Sara Landry (High-Energy Acid Hard Techno)</option>
@@ -155,8 +152,12 @@
                 <option value="Melodic Techno">Melodic Techno</option>
             </select>
 
-            <label>Tempo: <span id="bpmDisplay" class="bpm-val">150 BPM</span></label>
-            <input type="range" id="bpm" min="120" max="180" value="150" oninput="updateBPM()">
+            <label>Tempo & Tap-Tempo</label>
+            <div class="bpm-wrapper">
+                <input type="range" id="bpm" min="120" max="180" value="150" oninput="updateBPM()">
+                <span id="bpmDisplay" class="bpm-val">150 BPM</span>
+                <button class="small" onclick="tapTempo()" title="Im Takt mitklicken">TAP</button>
+            </div>
 
             <label for="key">Tonart / Key</label>
             <select id="key" onchange="generatePrompt()">
@@ -230,6 +231,14 @@
         </div>
     </div>
 
+    <div class="card">
+        <label>Custom Preset Speicher (Browser Storage)</label>
+        <div class="btn-group" style="margin-top: 5px;">
+            <button class="secondary small" onclick="saveCustomPreset()">💾 Aktuelles Setup speichern</button>
+            <button class="secondary small" onclick="loadCustomPreset()">📂 Gespeichertes Setup laden</button>
+        </div>
+    </div>
+
     <div class="btn-group">
         <button onclick="generatePrompt()">Prompt Generieren</button>
         <button class="secondary" onclick="randomizeAll()">🎲 Alles Zufällig</button>
@@ -256,13 +265,13 @@
         let stepIndex = 0;
         let analyser = null;
         let canvas, canvasCtx;
+        let tapTimes = [];
 
         const acidNotes = [110, 110, 220, 110, 165, 110, 220, 130, 110, 110, 330, 110, 165, 220, 110, 147];
 
-        // Sprachdatenbank auf Deutsch & Englisch optimiert
         const titleDatabase = {
             de: {
-                w1: ["Trance", "Schranz", "Rave", "Tunnel", "Nacht", "Bass", "Ekstase", "Dunkelheit", "Schwarfeld"],
+                w1: ["Trance", "Schranz", "Rave", "Tunnel", "Nacht", "Bass", "Ekstase", "Dunkelheit", "Schwarzfeld"],
                 w2: ["Überdruck", "Puls", "Eskalation", "Hymne", "Distortion", "Modulation", "Kontrolle", "Verstärkung"]
             },
             en: {
@@ -368,6 +377,68 @@
             document.getElementById('bpmDisplay').innerText = val + ' BPM';
             generatePrompt();
             if(isPlaying) { stopAudio(); startAudio(); }
+        }
+
+        function tapTempo() {
+            const now = Date.now();
+            if (tapTimes.length > 0 && now - tapTimes[tapTimes.length - 1] > 2000) {
+                tapTimes = [];
+            }
+            tapTimes.push(now);
+            if (tapTimes.length > 4) tapTimes.shift();
+            if (tapTimes.length > 1) {
+                let intervals = [];
+                for (let i = 1; i < tapTimes.length; i++) {
+                    intervals.push(tapTimes[i] - tapTimes[i - 1]);
+                }
+                const avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
+                let calculatedBpm = Math.round(60000 / avgInterval);
+                if (calculatedBpm >= 120 && calculatedBpm <= 180) {
+                    document.getElementById('bpm').value = calculatedBpm;
+                    updateBPM();
+                }
+            }
+        }
+
+        function saveCustomPreset() {
+            const state = {
+                title: document.getElementById('trackTitle').value,
+                lang: document.getElementById('trackLang').value,
+                locationVibe: document.getElementById('locationVibe').value,
+                duration: document.getElementById('trackDuration').value,
+                genre: document.getElementById('genre').value,
+                bpm: document.getElementById('bpm').value,
+                key: document.getElementById('key').value,
+                synth: document.getElementById('synthEngine').value,
+                drums: document.getElementById('drums').value,
+                synths: document.getElementById('synths').value,
+                vocals: document.getElementById('vocals').value
+            };
+            localStorage.setItem('rauschwerk_preset', JSON.stringify(state));
+            alert('Setup erfolgreich im Browser gespeichert!');
+        }
+
+        function loadCustomPreset() {
+            const saved = localStorage.getItem('rauschwerk_preset');
+            if (!saved) {
+                alert('Kein gespeichertes Setup gefunden.');
+                return;
+            }
+            const state = JSON.parse(saved);
+            document.getElementById('trackTitle').value = state.title || '';
+            document.getElementById('trackLang').value = state.lang || 'en';
+            document.getElementById('locationVibe').value = state.locationVibe;
+            document.getElementById('trackDuration').value = state.duration;
+            document.getElementById('genre').value = state.genre;
+            document.getElementById('bpm').value = state.bpm;
+            document.getElementById('key').value = state.key;
+            document.getElementById('synthEngine').value = state.synth;
+            document.getElementById('drums').value = state.drums;
+            document.getElementById('synths').value = state.synths;
+            document.getElementById('vocals').value = state.vocals;
+            updateBPM();
+            generatePrompt();
+            alert('Setup geladen!');
         }
 
         function generatePrompt() {
