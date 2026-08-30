@@ -19,7 +19,7 @@
         
         .title-group { display: flex; gap: 10px; margin-top: 5px; }
         .title-group input { flex: 1; margin-top: 0; }
-        .title-group select { width: 130px; margin-top: 0; }
+        .title-group select { width: 140px; margin-top: 0; }
         
         .bpm-val { float: right; color: var(--accent); font-weight: bold; }
         
@@ -54,23 +54,21 @@
 </head>
 <body>
 
-    <h1>Rauschwerks Techno Prompt Generator <span>v13 PRO</span></h1>
+    <h1>Rauschwerks Techno Prompt Generator <span>v15 PRO SYNC</span></h1>
 
     <div class="card">
-        <label>Track Title Generator</label>
+        <label>Track Title & Language Sync</label>
         <div class="title-group">
             <input type="text" id="trackTitle" placeholder="Titel eingeben..." oninput="generatePrompt()">
-            <select id="titleLang" onchange="generateRandomLyrics()">
+            <!-- Nur noch Deutsch & Englisch, steuert Sprache für Titel & Lyrics gleichzeitig -->
+            <select id="trackLang" onchange="onLanguageChange()">
                 <option value="de">Deutsch 🇩🇪</option>
                 <option value="en" selected>English 🇬🇧</option>
-                <option value="es">Español 🇪🇸</option>
-                <option value="fr">Français 🇫🇷</option>
             </select>
             <button class="small" onclick="generateRandomTitle()">🎲 Titel</button>
         </div>
     </div>
 
-    <!-- NEU: Location, Vibe & Track-Länge -->
     <div class="card" style="border-color: var(--accent);">
         <label for="locationVibe" style="color: var(--accent);">Location & Vibe Profile</label>
         <select id="locationVibe" onchange="generatePrompt()">
@@ -91,33 +89,48 @@
     </div>
 
     <div class="card" style="border-color: var(--cyan);">
-        <label for="artistStyle" style="color: var(--cyan);">DJ Signature Presets (Trance bis Schranz)</label>
+        <label for="artistStyle" style="color: var(--cyan);">DJ Signature Presets (International & Germany 🇩🇪)</label>
         <select id="artistStyle" onchange="applyArtistPreset()">
             <option value="custom">-- Custom Selection --</option>
-            <optgroup label="Trance-Techno & Euro-Trance (Bouncy)">
+            
+            <optgroup label="🇩🇪 Deutsche DJ-Größen (Hard Techno, Schranz & Industrial)">
+                <option value="klangkuenstler">Klangkuenstler (Berlin - 155 BPM Schranz & Industrial Hymnen)</option>
+                <option value="fatoni_c">Kobosil (Berlin - Dystopian Industrial & Dark Peak-Time)</option>
+                <option value="isabel">I Hate Models (Melodic Hard Techno & Acid)</option>
+                <option value="marron">Marron (Berlin/Rotterdam - Groovy Vinyl Techno)</option>
+                <option value="daxj">Dax J (Berlin - High-Speed Industrial & Acid Hard Techno)</option>
+                <option value="svenvaeth">Sven Väth (Frankfurt - Legendärischer 90er Vinyl Trance & Tech)</option>
+                <option value="paulkalkbrenner">Paul Kalkbrenner (Berlin - Melodic Techno & Epic Synth Sound)</option>
+                <option value="lenfaki">Len Faki (Berlin/Berghain - Driving Peak-Time Techno)</option>
+                <option value="schacke">Schacke (Kopenhagen/Berlin - Fast Trance & Hard Techno)</option>
+            </optgroup>
+
+            <optgroup label="Trance-Techno & Euro-Trance (Bouncy & Groovy)">
                 <option value="marlon">Marlon Hoffstadt / DJ Daddy Trance (Bouncy Euro-Trance)</option>
                 <option value="malugi">MALUGI (Groovy Trance & House Energy)</option>
-                <option value="darrenstyles">Darren Styles / Hard Trance Vibe (High Energy Anthems)</option>
+                <option value="darrenstyles">Darren Styles (High Energy Hard Trance Anthems)</option>
                 <option value="isokib">I_o Style (Dark Progressive Trance & Techno)</option>
             </optgroup>
-            <optgroup label="Hard Trance & Rave & Neo-Trance">
+
+            <optgroup label="Hard Trance, Rave & Neo-Trance">
                 <option value="horsegiirL">horsegiirL (Bouncy Horse-Trance & Techno)</option>
                 <option value="badboombox">Bad Boombox (Sexy Trance & Ghetto Tech Groove)</option>
                 <option value="aze">AZYR (Fast Rave & Hard Trance Fusion)</option>
-                <option value="ceraounun">Cera Khin / Fast Rave Trance</option>
+                <option value="ceraounun">Cera Khin (Fast Rave Trance)</option>
             </optgroup>
+
             <optgroup label="Hardgroove & Tribal Techno">
                 <option value="carlcox">Carl Cox (Classic Peak Techno Groove)</option>
                 <option value="benwal">Benwal (Bouncy Hardgroove & House)</option>
                 <option value="dvs1">DVS1 (Deep Rolling Groove & Hypnotic Floor)</option>
                 <option value="partiboi69">Partiboi69 (Ghetto Funk & Raw 909 Groove)</option>
             </optgroup>
-            <optgroup label="Schranz, Hard & Industrial">
-                <option value="klangkuenstler">Klangkuenstler (155 BPM Schranz & Industrial)</option>
+
+            <optgroup label="International Hard Techno & Schranz Champions">
                 <option value="nicomoreno">Nico Moreno (Aggressive Hard Kick Slap)</option>
                 <option value="saralandry">Sara Landry (High-Energy Acid Hard Techno)</option>
                 <option value="russell">Rush / Pierre (Classic German Schranz & Loop-Techno)</option>
-                <option value="brakka">Brakka / Hard Schranzcore</option>
+                <option value="brakka">Brakka (Extreme Hard Schranzcore)</option>
             </optgroup>
         </select>
     </div>
@@ -246,14 +259,41 @@
 
         const acidNotes = [110, 110, 220, 110, 165, 110, 220, 130, 110, 110, 330, 110, 165, 220, 110, 147];
 
+        // Sprachdatenbank auf Deutsch & Englisch optimiert
+        const titleDatabase = {
+            de: {
+                w1: ["Trance", "Schranz", "Rave", "Tunnel", "Nacht", "Bass", "Ekstase", "Dunkelheit", "Schwarfeld"],
+                w2: ["Überdruck", "Puls", "Eskalation", "Hymne", "Distortion", "Modulation", "Kontrolle", "Verstärkung"]
+            },
+            en: {
+                w1: ["Trance", "Schranz", "Rave", "Cyber", "Velocity", "Binary", "Ecstasy", "Shadow", "Neon"],
+                w2: ["Overdrive", "Pulse", "Pressure", "Anthem", "Distortion", "Core", "Delirium", "Frequency"]
+            }
+        };
+
         const lyricDatabase = {
-            de: ["\nDie Frequenz übernimmt die Kontrolle.\nIm Dunkeln verlieren wir die Zeit.\n\n[Drop]\nBass. Druck. Ekstase."],
-            en: ["\nLost inside the hypnotic frequency.\nWe belong to the shadows of the club.\n\n[Drop]\nDon't stop the bass."],
-            es: ["\nLa frecuencia toma el control.\nPerdemos la noción del tiempo en la oscuridad.\n\n[Drop]\nBajo. Presión. Éxtasis."],
-            fr: ["\nLa fréquence prend le contrôle.\nNous nous perdons dans l'obscurité de la nuit.\n\n[Drop]\nBasse. Pression. Extase."]
+            de: [
+                "\n[Build-Up]\nDie Frequenz übernimmt die Kontrolle.\nSpürst du den Druck im Club?\n\n[Drop]\nBass. Druck. Ekstase.",
+                "\n[Build-Up]\nKein Entkommen aus dem Nebel.\nDie Nacht gehört uns.\n\n[Drop]\nAtme den Bass.",
+                "\n[Build-Up]\nEin letzter Blick auf die Uhr.\nEs gibt nur noch den Takt.\n\n[Drop]\nVolle Eskalation."
+            ],
+            en: [
+                "\n[Build-Up]\nLost inside the hypnotic frequency.\nWe belong to the shadows of the club.\n\n[Drop]\nDon't stop the bass.",
+                "\n[Build-Up]\nFeel the pressure rising on the floor.\nNo escape from the rhythm.\n\n[Drop]\nPure energy release.",
+                "\n[Build-Up]\nElectric current through the dark.\nOnly the beat remains.\n\n[Drop]\nPush the limit."
+            ]
         };
 
         const artistPresets = {
+            klangkuenstler: { genre: "Schranz Hard Groove", bpm: 155, key: "F minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Klangkuenstler Berlin 1990s Schranz Hard Techno style" },
+            fatoni_c: { genre: "Hard Techno", bpm: 148, key: "C minor", synthEngine: "rumble", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Kobosil Berlin dystopian industrial dark techno style" },
+            isabel: { genre: "Hard Techno", bpm: 150, key: "A minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "euphoric female trance choir vocals, soaring emotional hooks", artistTag: "I Hate Models melodic hard techno acid style" },
+            marron: { genre: "Bouncy Hardgroove", bpm: 142, key: "D minor", synthEngine: "square", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "none", artistTag: "Marron Rotterdam Berlin groovy vinyl techno style" },
+            daxj: { genre: "Hard Techno", bpm: 158, key: "E minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Dax J Berlin high speed industrial acid hard techno style" },
+            svenvaeth: { genre: "Hard Trance & Rave", bpm: 135, key: "A minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "deep German male spoken word monologue about Berlin nightlife", artistTag: "Sven Väth Frankfurt legendary 90s vinyl trance tech style" },
+            paulkalkbrenner: { genre: "Melodic Techno", bpm: 124, key: "F minor", synthEngine: "moog", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "deep German male spoken word monologue about Berlin nightlife", artistTag: "Paul Kalkbrenner Berlin melodic techno epic synth style" },
+            lenfaki: { genre: "Hard Techno", bpm: 138, key: "C minor", synthEngine: "rumble", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "none", artistTag: "Len Faki Berlin Berghain driving peak-time techno style" },
+            schacke: { genre: "Hard Trance & Rave", bpm: 152, key: "E minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "none", artistTag: "Schacke Copenhagen Berlin fast trance hard techno style" },
             marlon: { genre: "Fast Euro-Trance Techno", bpm: 145, key: "D minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "euphoric female trance choir vocals, soaring emotional hooks", artistTag: "Marlon Hoffstadt DJ Daddy Trance bouncy euro-trance style" },
             malugi: { genre: "Fast Euro-Trance Techno", bpm: 142, key: "A minor", synthEngine: "square", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "none", artistTag: "MALUGI groovy trance house style" },
             darrenstyles: { genre: "Hard Trance & Rave", bpm: 150, key: "E minor", synthEngine: "trancelead", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "euphoric wide super-saw trance arpeggiator, uplifting melodic pads", vocals: "euphoric female trance choir vocals, soaring emotional hooks", artistTag: "Darren Styles uplifting hard trance anthem style" },
@@ -266,16 +306,21 @@
             benwal: { genre: "Bouncy Hardgroove", bpm: 140, key: "C minor", synthEngine: "square", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "none", artistTag: "Benwal bouncy hardgroove house style" },
             dvs1: { genre: "Raw Hypnotic Techno", bpm: 132, key: "D minor", synthEngine: "rumble", drums: "hardgroove rolling kick drum, tribal percussion loops, driving ride cymbals", synths: "hypnotic minor plucks, fast delayed synth riffs", vocals: "none", artistTag: "DVS1 deep rolling floor techno style" },
             partiboi69: { genre: "Bouncy Hardgroove", bpm: 145, key: "F minor", synthEngine: "square", drums: "bouncy euro-trance 909 kick, fast offbeat bassline, snappy snares", synths: "groovy filtered chord stabs, rhythmic house-techno keys", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Partiboi69 ghetto funk 909 groove style" },
-            klangkuenstler: { genre: "Schranz Hard Groove", bpm: 155, key: "F minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Klangkuenstler 1990s Schranz Hard Techno style" },
             nicomoreno: { genre: "Hard Techno", bpm: 150, key: "A minor", synthEngine: "rumble", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "dark dystopian supersaw stabs, detuned lead synths", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Nico Moreno hard aggressive industrial techno style" },
             saralandry: { genre: "Hard Techno", bpm: 152, key: "D minor", synthEngine: "sawtooth", drums: "heavy distorted 909 kick drum, aggressive rolling sub-bass, fast offbeat hi-hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "hypnotic female whispered vocals, dark atmospheric phrases", artistTag: "Sara Landry high energy acid hard techno style" },
             russell: { genre: "Schranz Hard Groove", bpm: 158, key: "C minor", synthEngine: "sawtooth", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "screaming TB-303 acid lead with resonance sweeps", vocals: "none", artistTag: "Rush Pierre classic German loop Schranz style" },
             brakka: { genre: "Schranz Hard Groove", bpm: 165, key: "E minor", synthEngine: "fm", drums: "ultra distorted schranz kick, fast loop-percussion, aggressive noise hats", synths: "industrial metal percussion, distorted snare hits, anvil impacts", vocals: "dark robotic vocal chants, hypnotic spoken words", artistTag: "Brakka extreme hard Schranzcore style" }
         };
 
+        function onLanguageChange() {
+            generateRandomTitle();
+        }
+
         function generateRandomTitle() {
-            const w1 = ["Trance", "Schranz", "Rave", "Cyber", "Velocity", "Binary", "Ecstasy"];
-            const w2 = ["Overdrive", "Pulse", "Pressure", "Anthem", "Distortion", "Core", "Delirium"];
+            const lang = document.getElementById('trackLang').value;
+            const db = titleDatabase[lang] || titleDatabase.en;
+            const w1 = db.w1;
+            const w2 = db.w2;
             document.getElementById('trackTitle').value = `${w1[Math.floor(Math.random() * w1.length)]} ${w2[Math.floor(Math.random() * w2.length)]}`;
             generateRandomLyrics();
             generatePrompt();
@@ -287,7 +332,7 @@
                 document.getElementById('output-lyrics').innerText = getArrangementHeader() + "\n\n[Instrumental]";
                 return;
             }
-            const lang = document.getElementById('titleLang').value;
+            const lang = document.getElementById('trackLang').value;
             const db = lyricDatabase[lang] || lyricDatabase.en;
             document.getElementById('output-lyrics').innerText = getArrangementHeader() + "\n" + db[Math.floor(Math.random() * db.length)];
         }
@@ -337,17 +382,19 @@
             const vocals = document.getElementById('vocals').value;
             const locationVibe = document.getElementById('locationVibe').value;
             const trackDuration = document.getElementById('trackDuration').value;
+            const lang = document.getElementById('trackLang').value;
 
             let artistTag = (artistKey !== "custom" && artistPresets[artistKey]) ? `, ${artistPresets[artistKey].artistTag}` : "";
             let vocalText = vocals !== "none" ? `, ${vocals}` : "";
             let titlePrefix = title ? `Track Title: "${title}". ` : "";
             let arrText = ` Structural Flow: ${getArrangementHeader()}.`;
+            let langHint = lang === 'de' ? 'German language vocals/vibe.' : 'English language vocals/vibe.';
 
             let prompt = "";
             if (ai === "suno") {
-                prompt = `${titlePrefix}${trackDuration}, designed for ${locationVibe}. ${bpm} BPM, ${genre}${artistTag}, ${key}, ${drums}, ${synths}${vocalText}, high quality club master.`;
+                prompt = `${titlePrefix}${trackDuration}, designed for ${locationVibe}. ${bpm} BPM, ${genre}${artistTag}, ${key}, ${drums}, ${synths}${vocalText}, ${langHint} high quality club master.`;
             } else if (ai === "udio") {
-                prompt = `${titlePrefix}Optimized for ${locationVibe}. A ${trackDuration} driving ${bpm} BPM ${genre} track in ${key}${artistTag}.${arrText} Features ${drums}. Prominent ${synths}${vocalText}.`;
+                prompt = `${titlePrefix}Optimized for ${locationVibe}. A ${trackDuration} driving ${bpm} BPM ${genre} track in ${key}${artistTag}.${arrText} Features ${drums}. Prominent ${synths}${vocalText}. ${langHint}`;
             } else if (ai === "midjourney") {
                 prompt = `Album cover art for a ${genre} track, intended for ${locationVibe}${artistTag}, dark dystopian techno club aesthetic, neon green and pitch black, cinematic lighting --ar 1:1`;
             }
@@ -358,13 +405,14 @@
         function randomizeAll() {
             document.getElementById('artistStyle').value = "custom";
             generateRandomTitle();
-            const selects = ['genre', 'synthEngine', 'drums', 'synths', 'vocals', 'key', 'locationVibe', 'trackDuration'];
+            const selects = ['genre', 'synthEngine', 'drums', 'synths', 'vocals', 'key', 'locationVibe', 'trackDuration', 'trackLang'];
             selects.forEach(id => {
                 const el = document.getElementById(id);
                 el.selectedIndex = Math.floor(Math.random() * el.options.length);
             });
-            document.getElementById('bpm').value = Math.floor(Math.random() * (175 - 130 + 1)) + 130;
+            document.getElementById('bpm').value = Math.floor(Math.random() * (175 - 124 + 1)) + 124;
             updateBPM();
+            generateRandomTitle();
         }
 
         function copyText(elementId, btn) {
